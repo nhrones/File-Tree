@@ -1,6 +1,6 @@
 {
    "simple": {
-      "TargetFolder": "dist",
+      "TargetFolder": "",
       "Port": 80
    },
    "build": {

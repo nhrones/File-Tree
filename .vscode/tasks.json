@@ -14,7 +14,7 @@
       {
          "label": "RUN APP",
          "type": "shell",
-         "command": "serve dist",
+         "command": "serve",
          "problemMatcher": [
             "$deno"
          ]
