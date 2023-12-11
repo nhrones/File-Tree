@@ -4,7 +4,7 @@ import { toFileUrl } from "https://deno.land/std@0.157.0/path/win32.ts?s=toFileU
 import { ctx } from './context.ts'
 import { rpcRequest } from './sse_rpc.ts'
 import { log, flask } from './main.ts'
-import { getLanguage } from '../utils.ts'
+import { getLanguage } from './utils.ts'
 
 /* shorthand functions (createElement is defined at bottom)*/
 export const div = (props: any, ...children: any) => createElement("div", props, ...children);

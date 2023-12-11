@@ -15,3 +15,16 @@ All of this is accomplished by means of Remote Procedure Calls - RPC.
 <br/>
 
 ## Please see: https://github.com/nhrones/RPC-Broker
+
+## Bueno-RPC flow
+You can think of Bueno-RPC as a type of request/response communication system.    
+We have a client asking a server to process some input and eventually return the output in a streamed response. This all happens as a **_single asynchronous transaction_**:    
+  - The client sends the request using a request-map, rather than waiting for the response. 
+  - The request-map returns a request-promise to the client, leaving it unblocked.    
+  - The request-map assigns to the request a unique transaction ID (txID). 
+  - This txID is used by both the client and the server.    
+  - Eventually, the server will process the request and stream a response message back.
+  - All responses from the server will contain the original txID. 
+  - The request and response are matched on the client side by looking up the txID in the request-map.
+  - The request-promise is then
+  - The request-promise for this txID is either resolved or rejected based on the response. 

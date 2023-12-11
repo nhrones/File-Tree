@@ -1,5 +1,8 @@
 // deno-lint-ignore-file
-// deno:file:///C:/Users/nhron/dev/GitHub/DB/File-Tree/src/context.ts
+var __defProp = Object.defineProperty;
+var __name = (target, value) => __defProp(target, "name", { value, configurable: true });
+
+// src/context.ts
 var files = [];
 var ctx = {
   fileList: files,
@@ -7,13 +10,13 @@ var ctx = {
   folderName: ""
 };
 
-// deno:file:///C:/Users/nhron/dev/GitHub/DB/File-Tree/src/sse_rpc.ts
+// src/sse_rpc.ts
 var DEBUG = true;
 var local = false;
 var postURL = local ? "http://localhost:9099/SSERPC/ioRequest" : "https://rpc-broker.deno.dev/SSERPC/ioRequest";
 var regtURL = local ? "http://localhost:9099/SSERPC/ioRegistration" : "https://rpc-broker.deno.dev/SSERPC/ioRegistration";
 var callbacks = /* @__PURE__ */ new Map();
-var nextMsgID = 0;
+var nextTxID = 0;
 function refreshCSS() {
   if (DEBUG)
     console.log("refreshed css");
@@ -26,15 +29,16 @@ function refreshCSS() {
     const rel = elem.rel;
     if (elem.href && typeof rel != "string" || rel.length == 0 || rel.toLowerCase() == "stylesheet") {
       const url = elem.href.replace(/(&|\?)_cacheOverride=d+/, "");
-      elem.href = url + (url.indexOf("?") >= 0 ? "&" : "?") + "_cacheOverride=" + new Date().valueOf();
+      elem.href = url + (url.indexOf("?") >= 0 ? "&" : "?") + "_cacheOverride=" + (/* @__PURE__ */ new Date()).valueOf();
     }
     parent.appendChild(elem);
   }
 }
-var rpcRequest = (procedure, params) => {
-  const newID = nextMsgID++;
+__name(refreshCSS, "refreshCSS");
+var rpcRequest = /* @__PURE__ */ __name((procedure, params) => {
+  const newTxID = nextTxID++;
   return new Promise((resolve, reject) => {
-    callbacks.set(newID, (error, result) => {
+    callbacks.set(newTxID, (error, result) => {
       if (error)
         return reject(new Error(error.message));
       resolve(result);
@@ -43,11 +47,11 @@ var rpcRequest = (procedure, params) => {
       console.log(`fetch called: ${procedure}`);
     fetch(postURL, {
       method: "POST",
-      body: JSON.stringify({ txID: newID, procedure, params })
+      body: JSON.stringify({ txID: newTxID, procedure, params })
     });
   });
-};
-var initComms = () => {
+}, "rpcRequest");
+var initComms = /* @__PURE__ */ __name(() => {
   return new Promise((resolve, reject) => {
     const events = new EventSource(regtURL);
     console.log("CONNECTING");
@@ -90,15 +94,16 @@ var initComms = () => {
       }
     };
   });
-};
+}, "initComms");
 
-// deno:file:///C:/Users/nhron/dev/GitHub/DB/File-Tree/src/elementBuilder.ts
+// src/elementBuilder.ts
 function appendChildren(parent, children) {
   for (const child of children) {
     if (child)
       appendChild(parent, child);
   }
 }
+__name(appendChildren, "appendChildren");
 function appendChild(parent, child) {
   switch (typeof child) {
     case "string": {
@@ -112,6 +117,7 @@ function appendChild(parent, child) {
     }
   }
 }
+__name(appendChild, "appendChild");
 function appendToFolder(parent, child, folderName) {
   setProps(child, { "data-foldername": folderName });
   let children = [...parent.children];
@@ -121,6 +127,7 @@ function appendToFolder(parent, child, folderName) {
     }
   });
 }
+__name(appendToFolder, "appendToFolder");
 function setStyle(el, style) {
   if (typeof style == "string") {
     el.setAttribute("style", style);
@@ -128,6 +135,7 @@ function setStyle(el, style) {
     Object.assign(el.style, style);
   }
 }
+__name(setStyle, "setStyle");
 function setClass(el, className) {
   className.split(/\s/).forEach((element) => {
     if (element) {
@@ -135,6 +143,7 @@ function setClass(el, className) {
     }
   });
 }
+__name(setClass, "setClass");
 function setProps(el, props) {
   const eventRegex = /^on([a-z]+)$/i;
   for (const propName in props) {
@@ -152,6 +161,7 @@ function setProps(el, props) {
     }
   }
 }
+__name(setProps, "setProps");
 function createElement(type, props, ...children) {
   if (typeof type === "function") {
     return type(props);
@@ -166,9 +176,10 @@ function createElement(type, props, ...children) {
     return el;
   }
 }
+__name(createElement, "createElement");
 
-// deno:file:///C:/Users/nhron/dev/GitHub/DB/File-Tree/utils.ts
-var getLanguage = (name) => {
+// src/utils.ts
+var getLanguage = /* @__PURE__ */ __name((name) => {
   const ext = getExtention(name);
   if (ext === ".js" || ext === "ts")
     return "js";
@@ -177,19 +188,19 @@ var getLanguage = (name) => {
   if (ext === ".html" || ext === ".md")
     return "markdown";
   return "js";
-};
-var getExtention = (name) => {
+}, "getLanguage");
+var getExtention = /* @__PURE__ */ __name((name) => {
   return name ? name.substring(name.lastIndexOf("."), name.length) || name : "";
-};
+}, "getExtention");
 
-// deno:file:///C:/Users/nhron/dev/GitHub/DB/File-Tree/src/newTreeView.ts
-var div = (props, ...children) => createElement("div", props, ...children);
-var ul = (props, ...children) => createElement("ul", props, ...children);
-var i = (props, ...children) => createElement("i", props, ...children);
-var span = (props, ...children) => createElement("span", props, ...children);
-var header = (props, ...children) => createElement("header", props, ...children);
-var section = (props, ...children) => createElement("section", props, ...children);
-var File = (name) => {
+// src/newTreeView.ts
+var div = /* @__PURE__ */ __name((props, ...children) => createElement("div", props, ...children), "div");
+var ul = /* @__PURE__ */ __name((props, ...children) => createElement("ul", props, ...children), "ul");
+var i = /* @__PURE__ */ __name((props, ...children) => createElement("i", props, ...children), "i");
+var span = /* @__PURE__ */ __name((props, ...children) => createElement("span", props, ...children), "span");
+var header = /* @__PURE__ */ __name((props, ...children) => createElement("header", props, ...children), "header");
+var section = /* @__PURE__ */ __name((props, ...children) => createElement("section", props, ...children), "section");
+var File = /* @__PURE__ */ __name((name) => {
   return div(
     {
       "data-filename": name,
@@ -200,7 +211,7 @@ var File = (name) => {
     i({ className: "material-icons" }, "insert_drive_file"),
     span(null, name)
   );
-};
+}, "File");
 var openedFolderIcon = "folder_open";
 var closedFolderIcon = "folder";
 var openedArrowIcon = "arrow_drop_down";
@@ -221,6 +232,7 @@ function onNodeClicked(e) {
     }
   }).catch((e2) => log(e2));
 }
+__name(onNodeClicked, "onNodeClicked");
 function changeOpened(event) {
   const folderHeader = event.target.classList.contains("folder-header") ? event.target : event.target.parentElement;
   const opened = folderHeader.getAttribute("opened") == "true";
@@ -245,7 +257,8 @@ function changeOpened(event) {
   }
   folderHeader.setAttribute("opened", newOpened);
 }
-var Folder = (props, ...children) => {
+__name(changeOpened, "changeOpened");
+var Folder = /* @__PURE__ */ __name((props, ...children) => {
   const opened = props.opened || false;
   const arrowIcon = opened ? openedArrowIcon : closedArrowIcon;
   const folderIcon = opened ? openedFolderIcon : closedFolderIcon;
@@ -264,8 +277,8 @@ var Folder = (props, ...children) => {
     ),
     ul({ className: opened ? "" : "hide" }, ...children)
   );
-};
-var getFolder = (path) => {
+}, "Folder");
+var getFolder = /* @__PURE__ */ __name((path) => {
   const sub = path.lastIndexOf("\\");
   if (sub === -1) {
     if (path.lastIndexOf(".") != -1) {
@@ -274,8 +287,8 @@ var getFolder = (path) => {
     return path;
   }
   return path.substring(0, sub);
-};
-var loadFiles = (entries) => {
+}, "getFolder");
+var loadFiles = /* @__PURE__ */ __name((entries) => {
   let container = section({ id: "#flaskArea", classname: "container " });
   let thisIndex = 0;
   try {
@@ -301,12 +314,12 @@ var loadFiles = (entries) => {
   }
   console.info("container: ", container);
   return container;
-};
-var NewTreeView = () => {
+}, "loadFiles");
+var NewTreeView = /* @__PURE__ */ __name(() => {
   return loadFiles(ctx.fileList);
-};
+}, "NewTreeView");
 
-// deno:file:///C:/Users/nhron/dev/GitHub/DB/File-Tree/src/main.ts
+// src/main.ts
 var flask = new CodeFlask(".flaskContainer", {
   language: "js",
   lineNumbers: false,
@@ -315,7 +328,7 @@ var flask = new CodeFlask(".flaskContainer", {
 });
 var logger;
 var saveBtn;
-var log = (what, whatElse = null, and = null) => {
+var log = /* @__PURE__ */ __name((what, whatElse = null, and = null) => {
   let text = what + "   ";
   if (whatElse)
     text += whatElse;
@@ -323,7 +336,7 @@ var log = (what, whatElse = null, and = null) => {
     text += and;
   logger.textContent += text + `
     `;
-};
+}, "log");
 document.addEventListener("DOMContentLoaded", () => {
   refreshCSS();
   logger = document.getElementById("logger");
