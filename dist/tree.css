@@ -1,0 +1,52 @@
+/* Tree View */
+#treeView {
+    padding-top: 2em;
+    padding-right: 0.1em;
+    padding-bottom: 3em;
+    overflow: auto;
+    white-space: nowrap;
+}
+
+#treeView span {
+    display: inline-flex;
+    vertical-align: middle;
+    padding-left: 0.3em;
+}
+
+#treeView i {
+    vertical-align: middle;
+}
+
+/* File */
+.file {
+    position: relative;
+    display: block;
+    cursor: pointer;
+}
+
+.file:hover {
+    background-color: #555;
+}
+
+/* Folder */
+.folder {
+    display: block;
+}
+
+.folder-header {
+    position: relative;
+    cursor: pointer;
+}
+
+.folder-header:hover {
+    background-color: #555;
+}
+
+.folder>ul {
+    padding-left: 1em;
+    margin: 0;
+}
+
+.hide {
+    display: none !important;
+}

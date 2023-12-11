@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="shortcut icon" type="image/x-icon" href="data:image/x-icon;,">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script src="https://unpkg.com/codeflask/build/codeflask.min.js"></script>
+    <link rel=stylesheet href=./style.css>
+    <link rel=stylesheet href=./tree.css>
+    <link rel=stylesheet href=./codeFlask.css>
+
+</head>
+
+<body>
+    <div id="wrapper" class="grid-container">
+        <div class="header">
+            <button id="saveBtn">Save File</button>
+        </div>
+        <div id="treeView" class="tree"></div>
+        <div id="flaskContainer" contenteditable=true class="flaskContainer flask"></div>
+        <div class="footer">
+            <pre id="logger"></pre>
+        </div>
+    </div>
+
+    <script type="module" src="./bundle.js"></script>
+</body>
+
+</html>

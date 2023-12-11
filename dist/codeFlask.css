@@ -1,0 +1,49 @@
+.flaskContainer{
+    overflow: hidden;
+
+} 
+.codeflask{
+    display: inline;  
+    height: 70%;
+    overflow: hidden;
+    background-color: antiquewhite;
+}
+
+.token.keyword,
+.token.regex,
+.token.important,
+.token.variable,
+.token.atrule,
+.token.attr-value,
+.token.class-name {
+    color:rgb(194, 11, 48);
+}
+
+.token.attr-name,
+.token.builtin,
+.token.char,
+.token.function,
+.token.inserted,
+.token.selector{
+    color: blue;
+}
+
+.token.cdata,
+
+.token.doctype,
+.token.prolog {
+    color: black;
+}
+
+.token.comment {
+    color: green;
+}  
+
+.token.string {
+    color: rgb(194, 11, 48);
+  }
+  
+.token.punctuation,
+.token.operator {
+    color: black;
+  }

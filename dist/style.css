@@ -1,0 +1,47 @@
+* {
+    overflow: hidden;
+    font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+}
+
+.grid-container {
+    height: 100vh;
+    background-color: white;
+    display: grid;
+    grid-template-columns: 1fr 4fr;
+    grid-template-rows: 50px 1fr 100px;
+    grid-gap: 10px;
+    grid-template-areas: 
+    "header header"
+    "tree flask"
+    "footer footer";
+}
+
+.grid-item {
+    padding: 10px;
+}
+
+.header {
+    padding: 5px;
+    grid-area: header;
+    color:white;
+    background-color: black; 
+}
+
+.tree {
+    color:white;
+    background-color: black; 
+    grid-area: tree; 
+    overflow: auto;
+}
+
+.flask {
+    background-color: white;
+    grid-area: flask; 
+}
+
+.footer {
+    color:white;
+    background-color: black;
+    grid-area: footer;  
+    overflow: auto;
+}
