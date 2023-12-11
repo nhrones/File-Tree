@@ -3,7 +3,7 @@
 /// <reference lib="dom" />
 /// <reference lib="dom.asynciterable" />
 
-const DEBUG = true
+const DEBUG = false
 
 import { RpcId, RpcProcedure, RpcParams } from './constants.ts'
 const local = false
