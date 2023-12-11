@@ -1,5 +1,5 @@
 /// <reference lib="dom" />
-  
+     
 import { ctx } from './context.ts'
 import { initComms, rpcRequest, refreshCSS } from './sse_rpc.ts'
 import { NewTreeView } from './newTreeView.ts'

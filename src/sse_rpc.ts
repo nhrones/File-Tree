@@ -7,8 +7,8 @@ const DEBUG = true
 
 import { RpcId, RpcProcedure, RpcParams } from '../constants.ts'
 const local = false
-const postURL = (local) ? "/send" : "http://localhost:9099/SSERPC/ioRequest"
-const regtURL = (local) ? "/listen" : "http://localhost:9099/SSERPC/ioRegistration"
+const postURL = (local) ? "http://localhost:9099/SSERPC/ioRequest" : "https://rpc-broker.deno.dev/SSERPC/ioRequest"
+const regtURL = (local) ? "http://localhost:9099/SSERPC/ioRegistration" : "https://rpc-broker.deno.dev/SSERPC/ioRegistration"
 
 
 /* Usage:

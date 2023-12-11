@@ -1,5 +1,5 @@
 // deno-lint-ignore-file
-// deno:file:///C:/Users/nhron/Desktop/File-Tree/src/context.ts
+// deno:file:///C:/Users/nhron/dev/GitHub/DB/File-Tree/src/context.ts
 var files = [];
 var ctx = {
   fileList: files,
@@ -7,11 +7,11 @@ var ctx = {
   folderName: ""
 };
 
-// deno:file:///C:/Users/nhron/Desktop/File-Tree/src/sse_rpc.ts
+// deno:file:///C:/Users/nhron/dev/GitHub/DB/File-Tree/src/sse_rpc.ts
 var DEBUG = true;
 var local = false;
-var postURL = local ? "/send" : "http://localhost:9099/SSERPC/ioRequest";
-var regtURL = local ? "/listen" : "http://localhost:9099/SSERPC/ioRegistration";
+var postURL = local ? "http://localhost:9099/SSERPC/ioRequest" : "https://rpc-broker.deno.dev/SSERPC/ioRequest";
+var regtURL = local ? "http://localhost:9099/SSERPC/ioRegistration" : "https://rpc-broker.deno.dev/SSERPC/ioRegistration";
 var callbacks = /* @__PURE__ */ new Map();
 var nextMsgID = 0;
 function refreshCSS() {
@@ -92,7 +92,7 @@ var initComms = () => {
   });
 };
 
-// deno:file:///C:/Users/nhron/Desktop/File-Tree/src/elementBuilder.ts
+// deno:file:///C:/Users/nhron/dev/GitHub/DB/File-Tree/src/elementBuilder.ts
 function appendChildren(parent, children) {
   for (const child of children) {
     if (child)
@@ -167,7 +167,7 @@ function createElement(type, props, ...children) {
   }
 }
 
-// deno:file:///C:/Users/nhron/Desktop/File-Tree/utils.ts
+// deno:file:///C:/Users/nhron/dev/GitHub/DB/File-Tree/utils.ts
 var getLanguage = (name) => {
   const ext = getExtention(name);
   if (ext === ".js" || ext === "ts")
@@ -182,7 +182,7 @@ var getExtention = (name) => {
   return name ? name.substring(name.lastIndexOf("."), name.length) || name : "";
 };
 
-// deno:file:///C:/Users/nhron/Desktop/File-Tree/src/newTreeView.ts
+// deno:file:///C:/Users/nhron/dev/GitHub/DB/File-Tree/src/newTreeView.ts
 var div = (props, ...children) => createElement("div", props, ...children);
 var ul = (props, ...children) => createElement("ul", props, ...children);
 var i = (props, ...children) => createElement("i", props, ...children);
@@ -306,7 +306,7 @@ var NewTreeView = () => {
   return loadFiles(ctx.fileList);
 };
 
-// deno:file:///C:/Users/nhron/Desktop/File-Tree/src/main.ts
+// deno:file:///C:/Users/nhron/dev/GitHub/DB/File-Tree/src/main.ts
 var flask = new CodeFlask(".flaskContainer", {
   language: "js",
   lineNumbers: false,
@@ -344,13 +344,11 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
   initComms().then(() => {
-    console.log("initComms ok, calling GET_FOLDER");
     rpcRequest("GET_FOLDER", {
       folder: ctx.folderName,
       fileName: null,
       content: null
     }).then((result) => {
-      console.info(`GET_FOLDER: ${result}`);
       ctx.fileList = JSON.parse(result + "");
       tree.appendChild(createElement(NewTreeView, null, null));
     }).catch((e) => log(e));
