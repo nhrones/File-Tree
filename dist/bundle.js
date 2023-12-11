@@ -187,6 +187,8 @@ var getLanguage = /* @__PURE__ */ __name((name) => {
     return "css";
   if (ext === ".html" || ext === ".md")
     return "markdown";
+  if (ext === ".json")
+    return "json";
   return "js";
 }, "getLanguage");
 var getExtention = /* @__PURE__ */ __name((name) => {

@@ -4,7 +4,7 @@ import { ctx } from './context.ts'
 import { initComms, rpcRequest, refreshCSS } from './sse_rpc.ts'
 import { NewTreeView } from './newTreeView.ts'
 import { createElement } from './elementBuilder.ts'
- 
+
 //@ts-ignore in Global loaded in <Head> 
 export const flask = new CodeFlask('.flaskContainer', {
     language: 'js',
@@ -12,6 +12,8 @@ export const flask = new CodeFlask('.flaskContainer', {
     handleTabs: true,
     defaultTheme: false,
 });
+
+//HACK flask.addLanguage('ruby', Prism.languages['ruby']);
 
 let logger: HTMLPreElement;
 let saveBtn: HTMLButtonElement

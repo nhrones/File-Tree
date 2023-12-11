@@ -32,7 +32,6 @@ const File = (name: string) => {
         i({ className: "material-icons", style: "opacity: 0;" }, "arrow_right"),
         i({ className: "material-icons" }, "insert_drive_file"),
         span(null, name),
-
     );
 };
 
@@ -45,6 +44,7 @@ const openedFolderIcon = "folder_open";
 const closedFolderIcon = "folder";
 const openedArrowIcon = "arrow_drop_down";
 const closedArrowIcon = "arrow_right";
+//flask.addLanguage('ruby', Prism.languages['ruby']);
 
 
 /** Reacts to the event of a tree node being clicked. */

@@ -3,24 +3,32 @@
 /// <reference lib="dom" />
 /// <reference lib="dom.asynciterable" />
 
+import { RpcId, RpcProcedure, RpcParams } from './constants.ts'
+
 const DEBUG = false
 
-import { RpcId, RpcProcedure, RpcParams } from './constants.ts'
 const local = false
-const postURL = (local) ? "http://localhost:9099/SSERPC/ioRequest" : "https://rpc-broker.deno.dev/SSERPC/ioRequest"
-const regtURL = (local) ? "http://localhost:9099/SSERPC/ioRegistration" : "https://rpc-broker.deno.dev/SSERPC/ioRegistration"
+const postURL = (local) 
+   ? "http://localhost:9099/SSERPC/ioRequest" 
+   : "https://rpc-broker.deno.dev/SSERPC/ioRequest";
+const regtURL = (local) 
+   ? "http://localhost:9099/SSERPC/ioRegistration" 
+   : "https://rpc-broker.deno.dev/SSERPC/ioRegistration";
 
 
-/* Usage:
-    import { rpcRequest } from './sse_rpc.js'
-    // this returns a promise
-    rpcRequest({ procedure: 'DO_SOMETHING', params: someValue(s) })
-        .then ((value) => {
-            log('got a result from RPC ', value)
-            useIt(value);
-        }).catch((e) => log(e))
-    }
-*/
+/** 
+ * SSE RPC Client
+ * 
+ * @example
+ *   import { rpcRequest } from './sse_rpc.js'
+ *    // this returns a promise
+ *    rpcRequest({ procedure: 'DO_SOMETHING', params: someValue(s) })
+ *        .then ((value) => {
+ *            log('got a result from RPC ', value)
+ *            useIt(value);
+ *        }).catch((e) => log(e))
+ *    }
+ */
 
 /** 
  * Map of callbacks keyed by txID 
@@ -30,7 +38,9 @@ const callbacks: Map<RpcId, any> = new Map()
 /** ID number generator */
 let nextTxID = 0
 
-/** refresh css  */
+/** 
+ * refresh css  
+ */
 export function refreshCSS() {
    if (DEBUG) console.log('refreshed css')
    const sheets = [].slice.call(document.getElementsByTagName("link"));
@@ -74,7 +84,9 @@ export const rpcRequest = (procedure: RpcProcedure, params: RpcParams) => {
 })
 }
 
-/** Initialize our SSE communications */
+/** 
+ * Initialize our SSE communications 
+ */
 export const initComms = () => {
    return new Promise((resolve, reject) => {
 
