@@ -11,7 +11,7 @@ var ctx = {
 };
 
 // src/sse_rpc.ts
-var DEBUG = true;
+var DEBUG = false;
 var local = false;
 var postURL = local ? "http://localhost:9099/SSERPC/ioRequest" : "https://rpc-broker.deno.dev/SSERPC/ioRequest";
 var regtURL = local ? "http://localhost:9099/SSERPC/ioRegistration" : "https://rpc-broker.deno.dev/SSERPC/ioRegistration";
