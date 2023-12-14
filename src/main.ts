@@ -1,7 +1,9 @@
+
+
 /// <reference lib="dom" />
      
 import { ctx } from './context.ts'
-import { initComms, rpcRequest, refreshCSS } from './sse_rpc.ts'
+import { initComms, rpcRequest, refreshCSS } from './sse_rpc.ts'  // './deps.ts'
 import { NewTreeView } from './newTreeView.ts'
 import { createElement } from './elementBuilder.ts'
 
@@ -12,8 +14,6 @@ export const flask = new CodeFlask('.flaskContainer', {
     handleTabs: true,
     defaultTheme: false,
 });
-
-//HACK flask.addLanguage('ruby', Prism.languages['ruby']);
 
 let logger: HTMLPreElement;
 let saveBtn: HTMLButtonElement
@@ -40,9 +40,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 folder: ctx.folderName,
                 fileName: ctx.fileName,
                 content: flask.getCode()
-            }).then((result) => {
+            }).then((result: any) => {
                 if (typeof result === 'string') log(result);
-            }).catch((e) => log(e))
+            }).catch((e: any) => log(e))
                 
         } else {
             alert(`Missing folder or filename! folder: ${ctx.folderName}  file: ${ctx.fileName}`)
@@ -54,10 +54,10 @@ document.addEventListener('DOMContentLoaded', () => {
             folder: ctx.folderName,
             fileName: null,
             content: null
-        }).then((result) => {
+        }).then((result: any) => {
             ctx.fileList = JSON.parse(result + '')
             tree.appendChild(createElement(NewTreeView, null, null));
-        }).catch((e) => log(e))
+        }).catch((e: Error) => log(e.message))
     })
    
     log('started ')

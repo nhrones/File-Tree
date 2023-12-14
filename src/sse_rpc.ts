@@ -5,30 +5,20 @@
 
 import { RpcId, RpcProcedure, RpcParams } from './constants.ts'
 
-const DEBUG = false
+const RunningOnDeploy = !!Deno.env.get("DENO_REGION")
+const DEBUG = !!Deno.env.get("DEBUG")
+console.log(`DEBUG = ${DEBUG}, RunningOnDeploy = ${RunningOnDeploy}`)
 
-const local = false
-const postURL = (local) 
-   ? "http://localhost:9099/SSERPC/ioRequest" 
-   : "https://rpc-broker.deno.dev/SSERPC/ioRequest";
-const regtURL = (local) 
-   ? "http://localhost:9099/SSERPC/ioRegistration" 
-   : "https://rpc-broker.deno.dev/SSERPC/ioRegistration";
+const local = true
+const postURL = (RunningOnDeploy)
+   ? "https://bueno-rpc.deno.dev/SSERPC/ioRequest"
+   : "http://localhost:9099/SSERPC/ioRequest";
+   
+const regtURL = (RunningOnDeploy)
+   ? "https://bueno-rpc.deno.dev/SSERPC/ioRegistration"
+   : "http://localhost:9099/SSERPC/ioRegistration";
+   
 
-
-/** 
- * SSE RPC Client
- * 
- * @example
- *   import { rpcRequest } from './sse_rpc.js'
- *    // this returns a promise
- *    rpcRequest({ procedure: 'DO_SOMETHING', params: someValue(s) })
- *        .then ((value) => {
- *            log('got a result from RPC ', value)
- *            useIt(value);
- *        }).catch((e) => log(e))
- *    }
- */
 
 /** 
  * Map of callbacks keyed by txID 
@@ -78,10 +68,10 @@ export const rpcRequest = (procedure: RpcProcedure, params: RpcParams) => {
       })
       if (DEBUG) console.log(`fetch called: ${procedure}`)
       fetch(postURL, {
-      method: "POST",
+         method: "POST",
          body: JSON.stringify({ txID: newTxID, procedure: procedure, params: params }),
-        });
-})
+      });
+   })
 }
 
 /** 
@@ -125,21 +115,11 @@ export const initComms = () => {
          const { data } = e
          if (DEBUG) console.info('events.onmessage - ', data)
          const parsed = JSON.parse(data)
-         const { txID, error, result } = parsed      // unpack
-         if (txID >= 0) {
-            if (!callbacks.has(txID)) return;        // check                  
-            const callback = callbacks.get(txID)     // fetch
-            callbacks.delete(txID)                   // clean up
-            callback(error, result)                  // execute
-         }
-         else if (txID === -1) {
-            console.log('refreshCSS()')
-            refreshCSS();
-         }
-         else if (txID === -2) {
-            console.log('window.location.reload()')
-            window.location.reload();
-         }
+         const { txID, error, result } = parsed    // unpack
+         if (!callbacks.has(txID)) return;         // check                  
+         const callback = callbacks.get(txID)      // fetch
+         callbacks.delete(txID)                    // clean up
+         callback(error, result)                   // execute
       }
    })
 }

@@ -13,8 +13,8 @@ var ctx = {
 // src/sse_rpc.ts
 var DEBUG = false;
 var local = false;
-var postURL = local ? "http://localhost:9099/SSERPC/ioRequest" : "https://rpc-broker.deno.dev/SSERPC/ioRequest";
-var regtURL = local ? "http://localhost:9099/SSERPC/ioRegistration" : "https://rpc-broker.deno.dev/SSERPC/ioRegistration";
+var postURL = local ? "http://localhost:9099/SSERPC/ioRequest" : "https://bueno-rpc.deno.dev/SSERPC/ioRequest";
+var regtURL = local ? "http://localhost:9099/SSERPC/ioRegistration" : "https://bueno-rpc.deno.dev/SSERPC/ioRegistration";
 var callbacks = /* @__PURE__ */ new Map();
 var nextTxID = 0;
 function refreshCSS() {
@@ -79,19 +79,11 @@ var initComms = /* @__PURE__ */ __name(() => {
         console.info("events.onmessage - ", data);
       const parsed = JSON.parse(data);
       const { txID, error, result } = parsed;
-      if (txID >= 0) {
-        if (!callbacks.has(txID))
-          return;
-        const callback = callbacks.get(txID);
-        callbacks.delete(txID);
-        callback(error, result);
-      } else if (txID === -1) {
-        console.log("refreshCSS()");
-        refreshCSS();
-      } else if (txID === -2) {
-        console.log("window.location.reload()");
-        window.location.reload();
-      }
+      if (!callbacks.has(txID))
+        return;
+      const callback = callbacks.get(txID);
+      callbacks.delete(txID);
+      callback(error, result);
     };
   });
 }, "initComms");
@@ -366,7 +358,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }).then((result) => {
       ctx.fileList = JSON.parse(result + "");
       tree.appendChild(createElement(NewTreeView, null, null));
-    }).catch((e) => log(e));
+    }).catch((e) => log(e.message));
   });
   log("started ");
 });
