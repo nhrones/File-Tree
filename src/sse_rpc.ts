@@ -9,7 +9,6 @@ const RunningOnDeploy = !!Deno.env.get("DENO_REGION")
 const DEBUG = !!Deno.env.get("DEBUG")
 console.log(`DEBUG = ${DEBUG}, RunningOnDeploy = ${RunningOnDeploy}`)
 
-const local = true
 const postURL = (RunningOnDeploy)
    ? "https://bueno-rpc.deno.dev/SSERPC/ioRequest"
    : "http://localhost:9099/SSERPC/ioRequest";
