@@ -56,8 +56,7 @@ function onNodeClicked(e: any) {
         folder: foldername,
         fileName: filename,
         content: null
-    })
-        .then((result: any) => {
+    }).then((result: any) => {
             const lang = getLanguage(ctx.fileName)
             if (typeof result === 'string') {
                 flask.updateLanguage(lang)
