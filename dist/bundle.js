@@ -11,10 +11,12 @@ var ctx = {
 };
 
 // src/sse_rpc.ts
-var DEBUG = false;
-var local = false;
-var postURL = local ? "http://localhost:9099/SSERPC/ioRequest" : "https://bueno-rpc.deno.dev/SSERPC/ioRequest";
-var regtURL = local ? "http://localhost:9099/SSERPC/ioRegistration" : "https://bueno-rpc.deno.dev/SSERPC/ioRegistration";
+var DEBUG = true;
+var RunningLocal = window.location.href === "http://localhost:8080/";
+console.log(`RunningLocal`, RunningLocal);
+var postURL = RunningLocal ? "http://localhost:9099/SSERPC/ioRequest" : "https://bueno-rpc.deno.dev/SSERPC/ioRequest";
+var regtURL = RunningLocal ? "http://localhost:9099/SSERPC/ioRegistration" : "https://bueno-rpc.deno.dev/SSERPC/ioRegistration";
+console.log(`Running from ${postURL}`);
 var callbacks = /* @__PURE__ */ new Map();
 var nextTxID = 0;
 function refreshCSS() {
@@ -366,3 +368,4 @@ export {
   flask,
   log
 };
+//!!Deno.env.get("DEBUG")

@@ -5,19 +5,22 @@
 
 import { RpcId, RpcProcedure, RpcParams } from './constants.ts'
 
-const RunningOnDeploy = !!Deno.env.get("DENO_REGION")
-const DEBUG = !!Deno.env.get("DEBUG")
-console.log(`DEBUG = ${DEBUG}, RunningOnDeploy = ${RunningOnDeploy}`)
+//const RunningOnDeploy = !!Deno.env.get("DENO_REGION")
+const DEBUG = true //!!Deno.env.get("DEBUG")
+//console.log(`DEBUG = ${DEBUG}, RunningOnDeploy = ${RunningOnDeploy}`)
 
-const postURL = (RunningOnDeploy)
-   ? "https://bueno-rpc.deno.dev/SSERPC/ioRequest"
-   : "http://localhost:9099/SSERPC/ioRequest";
-   
-const regtURL = (RunningOnDeploy)
-   ? "https://bueno-rpc.deno.dev/SSERPC/ioRegistration"
-   : "http://localhost:9099/SSERPC/ioRegistration";
-   
+const RunningLocal = (window.location.href === "http://localhost:8080/");
+console.log(`RunningLocal`, RunningLocal);
 
+const postURL = (RunningLocal)
+   ? "http://localhost:9099/SSERPC/ioRequest"
+   : "https://bueno-rpc.deno.dev/SSERPC/ioRequest";
+   
+const regtURL = (RunningLocal)
+   ? "http://localhost:9099/SSERPC/ioRegistration"
+   : "https://bueno-rpc.deno.dev/SSERPC/ioRegistration";
+   
+console.log(`Running from ${postURL}`)
 
 /** 
  * Map of callbacks keyed by txID 
