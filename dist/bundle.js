@@ -10,51 +10,68 @@ var ctx = {
   folderName: ""
 };
 
-// https://raw.githubusercontent.com/nhrones/BuenoRPC-Client/main/mod.js
-var R = Object.defineProperty;
-var l = /* @__PURE__ */ __name((o, t) => R(o, "name", { value: t, configurable: true }), "l");
-var p = false;
-var i = false;
-var S = i ? "http://localhost:9099/SSERPC/ioRequest" : "https://bueno-rpc.deno.dev/SSERPC/ioRequest";
-var d = i ? "http://localhost:9099/SSERPC/ioRegistration" : "https://bueno-rpc.deno.dev/SSERPC/ioRegistration";
-var r = /* @__PURE__ */ new Map();
-var u = 0;
-var m = l((o, t) => {
-  let e = u++;
-  return new Promise((a, n) => {
-    r.set(e, (c, s) => {
-      if (c)
-        return n(new Error(c.message));
-      a(s);
-    }), p && console.log(`fetch called: ${o}`), fetch(S, { method: "POST", body: JSON.stringify({ txID: e, procedure: o, params: t }) });
+// https://raw.githubusercontent.com/nhrones/BuenoRPC-Client/main/bueno_rpc.ts
+var RunningLocal = window.location.href === "http://localhost:8080/";
+var DEBUG = RunningLocal;
+console.log(`RunningLocal`, RunningLocal);
+var postURL = RunningLocal ? "http://localhost:9099/SSERPC/ioRequest" : "https://bueno-rpc.deno.dev/SSERPC/ioRequest";
+var regtURL = RunningLocal ? "http://localhost:9099/SSERPC/ioRegistration" : "https://bueno-rpc.deno.dev/SSERPC/ioRegistration";
+console.log(`Running from ${postURL}`);
+var transactions = /* @__PURE__ */ new Map();
+var nextTxID = 0;
+var rpcRequest = /* @__PURE__ */ __name((procedure, params) => {
+  const newTxID = nextTxID++;
+  return new Promise((resolve, reject) => {
+    transactions.set(newTxID, (error, result) => {
+      if (error)
+        return reject(new Error(error.message));
+      resolve(result);
+    });
+    if (DEBUG)
+      console.log(`fetch called: ${procedure}`);
+    fetch(postURL, {
+      method: "POST",
+      mode: "no-cors",
+      body: JSON.stringify({ txID: newTxID, procedure, params })
+    });
   });
 }, "rpcRequest");
-var P = l(() => new Promise((o, t) => {
-  let e = new EventSource(d);
-  console.log("CONNECTING"), e.onopen = () => {
-    console.log("CONNECTED"), o("ok");
-  }, e.onerror = () => {
-    switch (e.readyState) {
-      case EventSource.OPEN:
-        console.log("CONNECTED");
-        break;
-      case EventSource.CONNECTING:
-        console.log("CONNECTING");
-        break;
-      case EventSource.CLOSED:
-        t("closed"), console.log("DISCONNECTED");
-        break;
-    }
-  }, e.onmessage = (a) => {
-    let { data: n } = a;
-    p && console.info("events.onmessage - ", n);
-    let c = JSON.parse(n), { txID: s, error: E, result: C } = c;
-    if (!r.has(s))
-      return;
-    let N = r.get(s);
-    r.delete(s), N(E, C);
-  };
-}), "initComms");
+var initComms = /* @__PURE__ */ __name(() => {
+  return new Promise((resolve, reject) => {
+    const events = new EventSource(regtURL);
+    console.log("CONNECTING");
+    events.onopen = () => {
+      console.log("CONNECTED");
+      resolve("ok");
+    };
+    events.onerror = () => {
+      switch (events.readyState) {
+        case EventSource.OPEN:
+          console.log("CONNECTED");
+          break;
+        case EventSource.CONNECTING:
+          console.log("CONNECTING");
+          break;
+        case EventSource.CLOSED:
+          reject("closed");
+          console.log("DISCONNECTED");
+          break;
+      }
+    };
+    events.onmessage = (evt) => {
+      if (DEBUG)
+        console.info("events.onmessage - ", evt.data);
+      const parsed = JSON.parse(evt.data);
+      const { txID, error, result } = parsed;
+      if (!transactions.has(txID))
+        return;
+      const transaction = transactions.get(txID);
+      transactions.delete(txID);
+      if (transaction)
+        transaction(error, result);
+    };
+  });
+}, "initComms");
 
 // src/elementBuilder.ts
 function appendChildren(parent, children) {
@@ -158,7 +175,7 @@ var getExtention = /* @__PURE__ */ __name((name) => {
 // src/treeView.ts
 var div = /* @__PURE__ */ __name((props, ...children) => createElement("div", props, ...children), "div");
 var ul = /* @__PURE__ */ __name((props, ...children) => createElement("ul", props, ...children), "ul");
-var i2 = /* @__PURE__ */ __name((props, ...children) => createElement("i", props, ...children), "i");
+var i = /* @__PURE__ */ __name((props, ...children) => createElement("i", props, ...children), "i");
 var span = /* @__PURE__ */ __name((props, ...children) => createElement("span", props, ...children), "span");
 var header = /* @__PURE__ */ __name((props, ...children) => createElement("header", props, ...children), "header");
 var section = /* @__PURE__ */ __name((props, ...children) => createElement("section", props, ...children), "section");
@@ -169,8 +186,8 @@ var File = /* @__PURE__ */ __name((name) => {
       onClick: onNodeClicked,
       className: "file"
     },
-    i2({ className: "material-icons", style: "opacity: 0;" }, "arrow_right"),
-    i2({ className: "material-icons" }, "insert_drive_file"),
+    i({ className: "material-icons", style: "opacity: 0;" }, "arrow_right"),
+    i({ className: "material-icons" }, "insert_drive_file"),
     span(null, name)
   );
 }, "File");
@@ -182,7 +199,7 @@ function onNodeClicked(e) {
   const { filename, foldername } = e.currentTarget.dataset;
   ctx.fileName = filename;
   ctx.folderName = foldername;
-  m("GET_FILE", {
+  rpcRequest("GET_FILE", {
     folder: foldername,
     fileName: filename,
     content: null
@@ -233,8 +250,8 @@ var Folder = /* @__PURE__ */ __name((props, ...children) => {
         className: "folder-header",
         opened
       },
-      i2({ className: "material-icons" }, arrowIcon),
-      i2({ className: "material-icons" }, folderIcon),
+      i({ className: "material-icons" }, arrowIcon),
+      i({ className: "material-icons" }, folderIcon),
       span(null, folderName)
     ),
     ul({ className: opened ? "" : "hide" }, ...children)
@@ -305,7 +322,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const tree = document.getElementById("treeView");
   saveBtn.onclick = () => {
     if (ctx.fileName.length > 0 && ctx.folderName.length > 0) {
-      m("SAVE_FILE", {
+      rpcRequest("SAVE_FILE", {
         folder: ctx.folderName,
         fileName: ctx.fileName,
         content: flask.getCode()
@@ -317,8 +334,8 @@ document.addEventListener("DOMContentLoaded", () => {
       alert(`Missing folder or filename! folder: ${ctx.folderName}  file: ${ctx.fileName}`);
     }
   };
-  P().then(() => {
-    m("GET_FOLDER", {
+  initComms().then(() => {
+    rpcRequest("GET_FOLDER", {
       folder: ctx.folderName,
       fileName: null,
       content: null
