@@ -5,7 +5,7 @@ This application demonstrates RPC calls to an BuenoRPC broker service.
 The app initially makes a call to get all items from the root folder.    
 The data returned is then loaded in a treeview UI.    
 Selecting an item in the treeview will request its content from the broker.    
-Any text content will then be presented in a text editor control.    
+Any text content will then be presented in a code presentation control.    
     
     
 ![Alt text](IOTree.png)
