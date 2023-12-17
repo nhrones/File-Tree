@@ -3,8 +3,8 @@
 /// <reference lib="dom" />
      
 import { ctx } from './context.ts'
-import { initComms, rpcRequest, refreshCSS } from './sse_rpc.ts'  // './deps.ts'
-import { NewTreeView } from './newTreeView.ts'
+import { initComms, rpcRequest } from './deps.ts' // './sse_rpc.ts'
+import { NewTreeView } from './treeView.ts'
 import { createElement } from './elementBuilder.ts'
 
 //@ts-ignore in Global loaded in <Head> 
@@ -29,7 +29,6 @@ export const log = (what: string, whatElse = null, and = null) => {
 };
     
 document.addEventListener('DOMContentLoaded', () => {
-    refreshCSS()
     logger = document.getElementById('logger') as HTMLPreElement;
     saveBtn = document.getElementById('saveBtn') as HTMLButtonElement;
     const tree = document.getElementById("treeView") as HTMLDivElement;

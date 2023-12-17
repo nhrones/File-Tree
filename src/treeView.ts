@@ -2,7 +2,7 @@
 import { createElement, appendChild, appendToFolder } from './elementBuilder.ts'
 import { toFileUrl } from "https://deno.land/std@0.157.0/path/win32.ts?s=toFileUrl";
 import { ctx } from './context.ts'
-import { rpcRequest } from './sse_rpc.ts'
+import { rpcRequest } from "./deps.ts"
 import { log, flask } from './main.ts'
 import { getLanguage } from './utils.ts'
 
@@ -57,13 +57,13 @@ function onNodeClicked(e: any) {
         fileName: filename,
         content: null
     })
-        .then((result) => {
+        .then((result: any) => {
             const lang = getLanguage(ctx.fileName)
             if (typeof result === 'string') {
                 flask.updateLanguage(lang)
                 flask.updateCode(result)
             }
-        }).catch((e) => log(e))
+        }).catch((e: Error) => log(e.message))
 }
 
 

@@ -1,2 +1,2 @@
 
-export * from '../../Bueno/RPC-Client/mod.js'
+export * from 'https://raw.githubusercontent.com/nhrones/BuenoRPC-Client/main/mod.js'

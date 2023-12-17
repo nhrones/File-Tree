@@ -10,85 +10,51 @@ var ctx = {
   folderName: ""
 };
 
-// src/sse_rpc.ts
-var DEBUG = true;
-var RunningLocal = window.location.href === "http://localhost:8080/";
-console.log(`RunningLocal`, RunningLocal);
-var postURL = RunningLocal ? "http://localhost:9099/SSERPC/ioRequest" : "https://bueno-rpc.deno.dev/SSERPC/ioRequest";
-var regtURL = RunningLocal ? "http://localhost:9099/SSERPC/ioRegistration" : "https://bueno-rpc.deno.dev/SSERPC/ioRegistration";
-console.log(`Running from ${postURL}`);
-var callbacks = /* @__PURE__ */ new Map();
-var nextTxID = 0;
-function refreshCSS() {
-  if (DEBUG)
-    console.log("refreshed css");
-  const sheets = [].slice.call(document.getElementsByTagName("link"));
-  const head = document.getElementsByTagName("head")[0];
-  for (let i2 = 0; i2 < sheets.length; ++i2) {
-    const elem = sheets[i2];
-    const parent = elem.parentElement || head;
-    parent.removeChild(elem);
-    const rel = elem.rel;
-    if (elem.href && typeof rel != "string" || rel.length == 0 || rel.toLowerCase() == "stylesheet") {
-      const url = elem.href.replace(/(&|\?)_cacheOverride=d+/, "");
-      elem.href = url + (url.indexOf("?") >= 0 ? "&" : "?") + "_cacheOverride=" + (/* @__PURE__ */ new Date()).valueOf();
-    }
-    parent.appendChild(elem);
-  }
-}
-__name(refreshCSS, "refreshCSS");
-var rpcRequest = /* @__PURE__ */ __name((procedure, params) => {
-  const newTxID = nextTxID++;
-  return new Promise((resolve, reject) => {
-    callbacks.set(newTxID, (error, result) => {
-      if (error)
-        return reject(new Error(error.message));
-      resolve(result);
-    });
-    if (DEBUG)
-      console.log(`fetch called: ${procedure}`);
-    fetch(postURL, {
-      method: "POST",
-      body: JSON.stringify({ txID: newTxID, procedure, params })
-    });
+// https://raw.githubusercontent.com/nhrones/BuenoRPC-Client/main/mod.js
+var R = Object.defineProperty;
+var l = /* @__PURE__ */ __name((o, t) => R(o, "name", { value: t, configurable: true }), "l");
+var p = false;
+var i = false;
+var S = i ? "http://localhost:9099/SSERPC/ioRequest" : "https://bueno-rpc.deno.dev/SSERPC/ioRequest";
+var d = i ? "http://localhost:9099/SSERPC/ioRegistration" : "https://bueno-rpc.deno.dev/SSERPC/ioRegistration";
+var r = /* @__PURE__ */ new Map();
+var u = 0;
+var m = l((o, t) => {
+  let e = u++;
+  return new Promise((a, n) => {
+    r.set(e, (c, s) => {
+      if (c)
+        return n(new Error(c.message));
+      a(s);
+    }), p && console.log(`fetch called: ${o}`), fetch(S, { method: "POST", body: JSON.stringify({ txID: e, procedure: o, params: t }) });
   });
 }, "rpcRequest");
-var initComms = /* @__PURE__ */ __name(() => {
-  return new Promise((resolve, reject) => {
-    const events = new EventSource(regtURL);
-    console.log("CONNECTING");
-    events.onopen = () => {
-      console.log("CONNECTED");
-      resolve("ok");
-    };
-    events.onerror = () => {
-      switch (events.readyState) {
-        case EventSource.OPEN:
-          console.log("CONNECTED");
-          break;
-        case EventSource.CONNECTING:
-          console.log("CONNECTING");
-          break;
-        case EventSource.CLOSED:
-          reject("closed");
-          console.log("DISCONNECTED");
-          break;
-      }
-    };
-    events.onmessage = (e) => {
-      const { data } = e;
-      if (DEBUG)
-        console.info("events.onmessage - ", data);
-      const parsed = JSON.parse(data);
-      const { txID, error, result } = parsed;
-      if (!callbacks.has(txID))
-        return;
-      const callback = callbacks.get(txID);
-      callbacks.delete(txID);
-      callback(error, result);
-    };
-  });
-}, "initComms");
+var P = l(() => new Promise((o, t) => {
+  let e = new EventSource(d);
+  console.log("CONNECTING"), e.onopen = () => {
+    console.log("CONNECTED"), o("ok");
+  }, e.onerror = () => {
+    switch (e.readyState) {
+      case EventSource.OPEN:
+        console.log("CONNECTED");
+        break;
+      case EventSource.CONNECTING:
+        console.log("CONNECTING");
+        break;
+      case EventSource.CLOSED:
+        t("closed"), console.log("DISCONNECTED");
+        break;
+    }
+  }, e.onmessage = (a) => {
+    let { data: n } = a;
+    p && console.info("events.onmessage - ", n);
+    let c = JSON.parse(n), { txID: s, error: E, result: C } = c;
+    if (!r.has(s))
+      return;
+    let N = r.get(s);
+    r.delete(s), N(E, C);
+  };
+}), "initComms");
 
 // src/elementBuilder.ts
 function appendChildren(parent, children) {
@@ -189,10 +155,10 @@ var getExtention = /* @__PURE__ */ __name((name) => {
   return name ? name.substring(name.lastIndexOf("."), name.length) || name : "";
 }, "getExtention");
 
-// src/newTreeView.ts
+// src/treeView.ts
 var div = /* @__PURE__ */ __name((props, ...children) => createElement("div", props, ...children), "div");
 var ul = /* @__PURE__ */ __name((props, ...children) => createElement("ul", props, ...children), "ul");
-var i = /* @__PURE__ */ __name((props, ...children) => createElement("i", props, ...children), "i");
+var i2 = /* @__PURE__ */ __name((props, ...children) => createElement("i", props, ...children), "i");
 var span = /* @__PURE__ */ __name((props, ...children) => createElement("span", props, ...children), "span");
 var header = /* @__PURE__ */ __name((props, ...children) => createElement("header", props, ...children), "header");
 var section = /* @__PURE__ */ __name((props, ...children) => createElement("section", props, ...children), "section");
@@ -203,8 +169,8 @@ var File = /* @__PURE__ */ __name((name) => {
       onClick: onNodeClicked,
       className: "file"
     },
-    i({ className: "material-icons", style: "opacity: 0;" }, "arrow_right"),
-    i({ className: "material-icons" }, "insert_drive_file"),
+    i2({ className: "material-icons", style: "opacity: 0;" }, "arrow_right"),
+    i2({ className: "material-icons" }, "insert_drive_file"),
     span(null, name)
   );
 }, "File");
@@ -216,7 +182,7 @@ function onNodeClicked(e) {
   const { filename, foldername } = e.currentTarget.dataset;
   ctx.fileName = filename;
   ctx.folderName = foldername;
-  rpcRequest("GET_FILE", {
+  m("GET_FILE", {
     folder: foldername,
     fileName: filename,
     content: null
@@ -226,7 +192,7 @@ function onNodeClicked(e) {
       flask.updateLanguage(lang);
       flask.updateCode(result);
     }
-  }).catch((e2) => log(e2));
+  }).catch((e2) => log(e2.message));
 }
 __name(onNodeClicked, "onNodeClicked");
 function changeOpened(event) {
@@ -267,8 +233,8 @@ var Folder = /* @__PURE__ */ __name((props, ...children) => {
         className: "folder-header",
         opened
       },
-      i({ className: "material-icons" }, arrowIcon),
-      i({ className: "material-icons" }, folderIcon),
+      i2({ className: "material-icons" }, arrowIcon),
+      i2({ className: "material-icons" }, folderIcon),
       span(null, folderName)
     ),
     ul({ className: opened ? "" : "hide" }, ...children)
@@ -334,13 +300,12 @@ var log = /* @__PURE__ */ __name((what, whatElse = null, and = null) => {
     `;
 }, "log");
 document.addEventListener("DOMContentLoaded", () => {
-  refreshCSS();
   logger = document.getElementById("logger");
   saveBtn = document.getElementById("saveBtn");
   const tree = document.getElementById("treeView");
   saveBtn.onclick = () => {
     if (ctx.fileName.length > 0 && ctx.folderName.length > 0) {
-      rpcRequest("SAVE_FILE", {
+      m("SAVE_FILE", {
         folder: ctx.folderName,
         fileName: ctx.fileName,
         content: flask.getCode()
@@ -352,8 +317,8 @@ document.addEventListener("DOMContentLoaded", () => {
       alert(`Missing folder or filename! folder: ${ctx.folderName}  file: ${ctx.fileName}`);
     }
   };
-  initComms().then(() => {
-    rpcRequest("GET_FOLDER", {
+  P().then(() => {
+    m("GET_FOLDER", {
       folder: ctx.folderName,
       fileName: null,
       content: null
@@ -368,4 +333,3 @@ export {
   flask,
   log
 };
-//!!Deno.env.get("DEBUG")
