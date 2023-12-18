@@ -10,22 +10,42 @@ var ctx = {
   folderName: ""
 };
 
+// https://raw.githubusercontent.com/nhrones/BuenoRPC-Client/main/context.ts
+var CTX = {
+  DEBUG: false,
+  DBServiceURL: "",
+  registrationURL: "",
+  requestURL: ""
+};
+
 // https://raw.githubusercontent.com/nhrones/BuenoRPC-Client/main/dbClient.ts
-var DEBUG = false;
+var { DBServiceURL, DEBUG, registrationURL, requestURL } = CTX;
 var nextMsgID = 0;
-var DBServiceURL = "";
 var transactions = /* @__PURE__ */ new Map();
 var DbClient = class {
-  constructor(serviceURL) {
+  constructor(serviceURL, serviceType) {
     this.querySet = [];
     DBServiceURL = serviceURL.endsWith("/") ? serviceURL : serviceURL += "/";
+    switch (serviceType) {
+      case "IO":
+        registrationURL = DBServiceURL + "SSERPC/ioRegistration", requestURL = DBServiceURL + "SSERPC/ioRequest";
+        break;
+      case "KV":
+        registrationURL = DBServiceURL + "SSERPC/kvRegistration", requestURL = DBServiceURL + "SSERPC/kvRequest";
+        break;
+      case "RELAY":
+        registrationURL = DBServiceURL + "SSERPC/relayRegistration", requestURL = DBServiceURL + "SSERPC/relayRequest";
+        break;
+      default:
+        break;
+    }
   }
   /** initialize our EventSource and fetch some data */
-  init(registrationURL) {
+  init() {
     return new Promise((resolve, reject) => {
       let connectAttemps = 0;
       console.log("CONNECTING");
-      const eventSource = new EventSource(DBServiceURL + registrationURL);
+      const eventSource = new EventSource(registrationURL);
       eventSource.addEventListener("open", () => {
         console.log("CONNECTED");
         resolve();
@@ -149,7 +169,7 @@ var rpcRequest = /* @__PURE__ */ __name((procedure, params) => {
         return reject(new Error(error));
       resolve(result);
     });
-    fetch(DBServiceURL + "SSERPC/kvRequest", {
+    fetch(requestURL, {
       method: "POST",
       mode: "no-cors",
       body: JSON.stringify({ txID, procedure, params })
@@ -283,11 +303,10 @@ function onNodeClicked(e) {
   const { filename, foldername } = e.currentTarget.dataset;
   ctx.fileName = filename;
   ctx.folderName = foldername;
-  rpcRequest("GET_FILE", {
-    folder: foldername,
-    fileName: filename,
-    content: null
-  }).then((result) => {
+  rpcRequest(
+    "GET_FILE",
+    { folder: foldername, fileName: filename, content: null }
+  ).then((result) => {
     const lang = getLanguage(ctx.fileName);
     if (typeof result === "string") {
       flask.updateLanguage(lang);
@@ -400,38 +419,34 @@ var log = /* @__PURE__ */ __name((what, whatElse = null, and = null) => {
   logger.textContent += text + `
     `;
 }, "log");
-document.addEventListener("DOMContentLoaded", () => {
-  logger = document.getElementById("logger");
-  saveBtn = document.getElementById("saveBtn");
-  const tree = document.getElementById("treeView");
-  const DBServiceURL2 = "http://localhost:9099";
-  const thisDB = new DbClient(DBServiceURL2);
-  saveBtn.onclick = () => {
-    if (ctx.fileName.length > 0 && ctx.folderName.length > 0) {
-      rpcRequest("SAVE_FILE", {
-        folder: ctx.folderName,
-        fileName: ctx.fileName,
-        content: flask.getCode()
-      }).then((result) => {
-        if (typeof result === "string")
-          log(result);
-      }).catch((e) => log(e));
-    } else {
-      alert(`Missing folder or filename! folder: ${ctx.folderName}  file: ${ctx.fileName}`);
-    }
-  };
-  thisDB.init("SSERPC/ioRegistration").then(() => {
-    rpcRequest("GET_FOLDER", {
-      folder: ctx.folderName,
-      fileName: null,
-      content: null
-    }).then((result) => {
-      ctx.fileList = JSON.parse(result + "");
-      tree.appendChild(createElement(NewTreeView, null, null));
-    }).catch((e) => log(e.message));
-  });
-  log("started ");
+logger = document.getElementById("logger");
+saveBtn = document.getElementById("saveBtn");
+var tree = document.getElementById("treeView");
+var DBServiceURL2 = "http://localhost:9099";
+var thisDB = new DbClient(DBServiceURL2, "IO");
+saveBtn.onclick = () => {
+  if (ctx.fileName.length > 0 && ctx.folderName.length > 0) {
+    rpcRequest(
+      "SAVE_FILE",
+      { folder: ctx.folderName, fileName: ctx.fileName, content: flask.getCode() }
+    ).then((result) => {
+      if (typeof result === "string")
+        log(result);
+    }).catch((e) => log(e));
+  } else {
+    alert(`Missing folder or filename! folder: ${ctx.folderName}  file: ${ctx.fileName}`);
+  }
+};
+thisDB.init().then(() => {
+  rpcRequest(
+    "GET_FOLDER",
+    { folder: ctx.folderName, fileName: null, content: null }
+  ).then((result) => {
+    ctx.fileList = JSON.parse(result + "");
+    tree.appendChild(createElement(NewTreeView, null, null));
+  }).catch((e) => log(e.message));
 });
+log("started ");
 export {
   flask,
   log
