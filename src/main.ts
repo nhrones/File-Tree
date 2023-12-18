@@ -31,9 +31,14 @@ logger = document.getElementById('logger') as HTMLPreElement;
 saveBtn = document.getElementById('saveBtn') as HTMLButtonElement;
 const tree = document.getElementById("treeView") as HTMLDivElement;
 
-const DBServiceURL = "http://localhost:9099"
+const RunningLocal = (window.location.href === "http://localhost:8080/");
+console.log(`RunningLocal`, RunningLocal);
+const dbServiceURL = (RunningLocal) 
+   ? 'http://localhost:9099'
+   : 'https://bueno-rpc.deno.dev/'
 
-const thisDB = new DbClient(DBServiceURL, "IO")
+
+const thisDB = new DbClient(dbServiceURL, "IO")
 
 saveBtn.onclick = () => {
    if (ctx.fileName.length > 0 && ctx.folderName.length > 0) {

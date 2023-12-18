@@ -422,8 +422,10 @@ var log = /* @__PURE__ */ __name((what, whatElse = null, and = null) => {
 logger = document.getElementById("logger");
 saveBtn = document.getElementById("saveBtn");
 var tree = document.getElementById("treeView");
-var DBServiceURL2 = "http://localhost:9099";
-var thisDB = new DbClient(DBServiceURL2, "IO");
+var RunningLocal = window.location.href === "http://localhost:8080/";
+console.log(`RunningLocal`, RunningLocal);
+var dbServiceURL = RunningLocal ? "http://localhost:9099" : "https://bueno-rpc.deno.dev/";
+var thisDB = new DbClient(dbServiceURL, "IO");
 saveBtn.onclick = () => {
   if (ctx.fileName.length > 0 && ctx.folderName.length > 0) {
     rpcRequest(
