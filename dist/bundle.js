@@ -404,9 +404,9 @@ var NewTreeView = /* @__PURE__ */ __name(() => {
 // src/main.ts
 var flask = new CodeFlask(".flaskContainer", {
   language: "js",
-  lineNumbers: false,
+  lineNumbers: true,
   handleTabs: true,
-  defaultTheme: false
+  defaultTheme: true
 });
 var logger;
 var saveBtn;

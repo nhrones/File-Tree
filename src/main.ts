@@ -9,9 +9,9 @@ import { createElement } from './elementBuilder.ts'
 //@ts-ignore in Global loaded in <Head> 
 export const flask = new CodeFlask('.flaskContainer', {
    language: 'js',
-   lineNumbers: false,
+   lineNumbers: true,
    handleTabs: true,
-   defaultTheme: false,
+   defaultTheme: true,
 });
 
 let logger: HTMLPreElement;

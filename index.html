@@ -5,12 +5,9 @@
     <link rel="shortcut icon" type="image/x-icon" href="data:image/x-icon;,">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <script src="https://unpkg.com/codeflask/build/codeflask.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/9000.0.1/prism.min.js"></script>
+    <script type="module" src="./dist/bundle.js"></script>
     <link rel=stylesheet href=./dist/style.css>
     <link rel=stylesheet href=./dist/tree.css>
-    <!-- <link rel=stylesheet href=./dist/codeFlask.css> -->
-    <link rel=stylesheet href=./dist/prism.css>
-    <script type="module" src="./dist/bundle.js"></script>
 </head>
 
 <body>
@@ -19,7 +16,7 @@
             <button id="saveBtn">Save File</button>
         </div>
         <div id="treeView" class="tree"></div>
-        <div id="flaskContainer" contenteditable=true class="flaskContainer flask"></div>
+        <div id="flaskContainer" contenteditable=false class="flaskContainer flask"></div>
         <div class="footer">
             <pre id="logger"></pre>
         </div>
