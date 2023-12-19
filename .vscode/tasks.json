@@ -4,6 +4,14 @@
    "version": "2.0.0",
    "tasks": [
       {
+         "label": "RPC SERICE",
+         "type": "shell",
+         "command": "rpc",
+         "problemMatcher": [
+            "$deno"
+         ],
+      },
+      {
          "label": "BUILD",
          "type": "shell",
          "command": "build",

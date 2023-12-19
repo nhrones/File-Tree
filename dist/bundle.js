@@ -312,7 +312,7 @@ function onNodeClicked(e) {
       flask.updateLanguage(lang);
       flask.updateCode(result);
     }
-  }).catch((e2) => log(e2.message));
+  }).catch((e2) => log("ERROR on savebtn " + e2.message));
 }
 __name(onNodeClicked, "onNodeClicked");
 function changeOpened(event) {

@@ -1,6 +1,5 @@
 // deno-lint-ignore-file
 import { createElement, appendChild, appendToFolder } from './elementBuilder.ts'
-import { toFileUrl } from "https://deno.land/std@0.157.0/path/win32.ts?s=toFileUrl";
 import { ctx } from './context.ts'
 import { rpcRequest } from "./deps.ts"
 import { log, flask } from './main.ts'
@@ -44,8 +43,6 @@ const openedFolderIcon = "folder_open";
 const closedFolderIcon = "folder";
 const openedArrowIcon = "arrow_drop_down";
 const closedArrowIcon = "arrow_right";
-//flask.addLanguage('ruby', Prism.languages['ruby']);
-
 
 /** Reacts to the event of a tree node being clicked. */
 function onNodeClicked(e: any) {
@@ -60,7 +57,7 @@ function onNodeClicked(e: any) {
             flask.updateLanguage(lang)
             flask.updateCode(result)
          }
-      }).catch((e: Error) => log(e.message))
+      }).catch((e: Error) => log('ERROR on savebtn '+ e.message))
 }
 
 

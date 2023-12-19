@@ -1,6 +1,4 @@
 // https://www.json.org/json-en.html
-//Prism.languages.
-//flask.addLanguage('ruby', Prism.languages['ruby']);
 
 const jsonLang = {
 	'property': {
