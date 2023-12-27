@@ -38,7 +38,7 @@ const dbServiceURL = (RunningLocal)
    : 'https://bueno-rpc.deno.dev/'
 
 
-const thisDB = new DbClient(dbServiceURL, "IO")
+const thisDB = new DbClient(dbServiceURL, "IO", "FileTree")
 
 saveBtn.onclick = () => {
    if (ctx.fileName.length > 0 && ctx.folderName.length > 0) {
